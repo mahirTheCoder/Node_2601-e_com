@@ -150,7 +150,7 @@ const signin = async (req, res) => {
 
 const profile = async (req, res) => {
   try {
-    const user = await userSchema.findOne({ _id: req.user.id } )
+    const user = await userSchema.findOne({ _id: req.user.id }, { _id: 1, avatar: 1, fullname: 1, email: 1 ,  roll: 1});
 
     if (!user) {
       return res.status(404).send("User not found");
