@@ -1,9 +1,12 @@
 const express = require('express')
 const router = require('./route');
 const dbConfig = require('./configs/dbConfig');
+const cookieParser = require('cookie-parser')
+
 const app = express()
 require('dotenv').config();
 app.use(express.json());
+app.use(cookieParser());
 app.use(router);
 dbConfig()
 

@@ -146,9 +146,27 @@ const signin = async (req, res) => {
 };
 
 
+// -----------profile controller
+
+const profile = async (req, res) => {
+  try {
+    const user = await userSchema.findOne({ _id: req.user.id } )
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Server error");
+  }
+};
+
 module.exports = {
   signup, 
   verifyOTP,
   resendOTP,
   signin,
+  profile,
 };
