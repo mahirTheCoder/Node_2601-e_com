@@ -11,6 +11,11 @@ dbConfig()
 // const dns = require('dns');
 // dns.setServers(['8.8.8.8', '8.8.4.4'])
 
+// -----env
+// MONGODB_URL = mongodb+srv://node_Ecom:AWufiBcjuNvMr8Vj@cluster0.mjewgzf.mongodb.net/Node_Ecom?appName=Cluster0
+// JWT_SEC = kdfjdfhnjdhfkjdfh
+
+
 app.listen((8000), () => {
   console.log(`Server is running on port ${8000}`)
 })

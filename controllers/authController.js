@@ -12,7 +12,7 @@ const signup = async (req, res) => {
     if (!fullname) return res.status(400).send("Fullname is required");
     if (!email) return res.status(400).send("Email is required");
     if (!isValidEmail(email)) return res.status(400).send("Invalid email");
-    if (!password) return res.status(400).send("Password is required");
+    if (!password || password.length < 6) return res.status(400).send("Password is required and must be at least 6 characters long");
 
     // ---------exesting email check
     const existingUser = await userSchema.findOne({ email });
@@ -32,6 +32,8 @@ const signup = async (req, res) => {
       otpExpires: Date.now() + 2 * 60 * 1000, // OTP expires in 2 minutes
     });
 
+
+    // ---------send otp to user email
     await mailSender({
       email,
       subject: "OTP Verification", 
@@ -143,10 +145,6 @@ const signin = async (req, res) => {
   }
 };
 
-// const twoFactorAuth = async (req, res) => {
-//   const { email } = req.body; 
-
-// }
 
 module.exports = {
   signup, 
