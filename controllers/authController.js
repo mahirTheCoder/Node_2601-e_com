@@ -187,8 +187,8 @@ const updateProfile = async (req, res) => {
     const userData = await userSchema.findOne({ _id: req.user.id });
 
     if (!userData) return res.status(404).send("User not found");
-    // if(fullname && fullname.trim()) userData.fullname = fullname;
-    // if(address && address.trim()) userData.address = address;
+    if(fullname && fullname.trim()) userData.fullname = fullname;
+    if(address && address.trim()) userData.address = address;
 
     if (avatar) {
       try {
