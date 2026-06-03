@@ -1,9 +1,16 @@
 const { otpEmailTemplates } = require("../helpers/emailTemplates");
 const mailSender = require("../helpers/mailService");
-const { isValidEmail, generateOTP, uploadToCloudinary } = require("../helpers/utils");
+const {
+  isValidEmail,
+  generateOTP,
+  uploadToCloudinary,
+} = require("../helpers/utils");
 const userSchema = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
-const { generateAccessToken, generateRefreshToken } = require("../helpers/utils");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../helpers/utils");
 // ---------Signup controller
 const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -12,7 +19,10 @@ const signup = async (req, res) => {
     if (!fullname) return res.status(400).send("Fullname is required");
     if (!email) return res.status(400).send("Email is required");
     if (!isValidEmail(email)) return res.status(400).send("Invalid email");
-    if (!password || password.length < 6) return res.status(400).send("Password is required and must be at least 6 characters long");
+    if (!password || password.length < 6)
+      return res
+        .status(400)
+        .send("Password is required and must be at least 6 characters long");
 
     // ---------exesting email check
     const existingUser = await userSchema.findOne({ email });
@@ -32,11 +42,10 @@ const signup = async (req, res) => {
       otpExpires: Date.now() + 2 * 60 * 1000, // OTP expires in 2 minutes
     });
 
-
     // ---------send otp to user email
     await mailSender({
       email,
-      subject: "OTP Verification", 
+      subject: "OTP Verification",
       otp,
     });
   } catch (err) {
@@ -138,23 +147,29 @@ const signin = async (req, res) => {
     // const token = generateAccessToken(user);
     // const reftoken = generateRefreshToken(user);
 
-    res .status(200).cookie('acc_tkn', token, cookieConfig).cookie('ref_tkn', reftoken, cookieConfig).send({ message: "Signin successful!" });
+    res
+      .status(200)
+      .cookie("acc_tkn", token, cookieConfig)
+      .cookie("ref_tkn", reftoken, cookieConfig)
+      .send({ message: "Signin successful!" });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(500).send("Server error");
   }
 };
 
-
 // -----------profile controller
 const profile = async (req, res) => {
   try {
-    const user = await userSchema.findOne({ _id: req.user.id }, { _id: 1, avatar: 1, fullname: 1, email: 1 ,  roll: 1});
-console.log(user);
+    const user = await userSchema.findOne(
+      { _id: req.user.id },
+      { _id: 1, avatar: 1, fullname: 1, email: 1, roll: 1 },
+    );
+    console.log(user);
     if (!user) {
       return res.status(404).send("User not found");
     }
-    
+
     res.status(200).send(user);
   } catch (err) {
     console.log(err);
@@ -165,35 +180,41 @@ console.log(user);
 // ----------update profile controller
 
 const updateProfile = async (req, res) => {
-const {fullname, address} = req.body;
-const avatar = req.file 
- 
-try{
-const userData = await userSchema.findOne({_id: req.user.id});
+  const { fullname, address } = req.body;
+  const avatar = req.file;
 
-if(!userData) return res.status(404).send("User not found");
-// if(fullname && fullname.trim()) userData.fullname = fullname;
-// if(address && address.trim()) userData.address = address;
+  try {
+    const userData = await userSchema.findOne({ _id: req.user.id });
 
-if(avatar){
-  const cloudResponse = await uploadToCloudinary({mimetype: avatar.mimetype, imgBuffer: avatar.buffer});
-  userData.avatar = cloudResponse.secure_url;
-}
-console.log(userData);
-console.log(avatar);
+    if (!userData) return res.status(404).send("User not found");
+    // if(fullname && fullname.trim()) userData.fullname = fullname;
+    // if(address && address.trim()) userData.address = address;
 
-}catch(err){
-  console.log(err);
-  return res.status(500).send("Server error");    
-}
+    if (avatar) {
+      try {
+            console.log(avatar);
+        const avatarUrl = await uploadToCloudinary({
+          mimetype: avatar.mimetype,
+          imgBuffer: avatar.buffer,
+        });
+        // if (userData.avatar) destroyFromCloudinary(userData.avatar);
+        userData.avatar = avatarUrl;
+      } catch (error) {}
+    }
 
-}
+    userData.save();
+    res.status(200).send({ message: "Profile updated successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Server error");
+  }
+};
 
 module.exports = {
-  signup, 
+  signup,
   verifyOTP,
   resendOTP,
   signin,
   profile,
-  updateProfile
+  updateProfile,
 };

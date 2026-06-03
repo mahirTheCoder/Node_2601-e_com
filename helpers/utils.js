@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const cloudinaryConfig = require("../configs/cloudinaryConfig");
+const cloudinary = require("../configs/cloudinaryConfig");
 
 
 
@@ -47,8 +47,20 @@ const generateRefreshToken = (user) => {
 const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
   const dataUrl = `data:${mimetype};base64,${imgBuffer.toString("base64")}`;
 
-  return await cloudinaryConfig.uploader.upload(dataUrl);
+  return await cloudinary.uploader.upload(dataUrl);
 };
+
+
+// -----------destroy from cloudinery
+// const destroyFromCloudinary = (url) => {
+//   const publicId = url.split("/").pop().split(".").shift();
+
+//   cloudinary.uploader.destroy(publicId, (error, result) => {
+//     if (error) {
+//       console.log("Destroy From Cloudinary:", error);
+//     }
+//   });
+// };
 
 
 

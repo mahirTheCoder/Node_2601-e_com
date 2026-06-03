@@ -2,16 +2,12 @@ const express = require('express')
 const router = require('./route');
 const dbConfig = require('./configs/dbConfig');
 const cookieParser = require('cookie-parser');
-const cloudinaryConfig = require('./configs/cloudinaryConfig');
-
 const app = express()
 require('dotenv').config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(router);
 dbConfig()
-cloudinaryConfig()
-
 // -----when db congfig not working then use this code t
 // const dns = require('dns');
 // dns.setServers(['8.8.8.8', '8.8.4.4'])
