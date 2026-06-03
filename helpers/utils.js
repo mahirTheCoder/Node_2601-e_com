@@ -1,5 +1,8 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const cloudinaryConfig = require("../configs/cloudinaryConfig");
+
+
 
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,4 +42,14 @@ const generateRefreshToken = (user) => {
 };
 
 
-module.exports = { isValidEmail, generateOTP, generateAccessToken, generateRefreshToken }
+// -----------upload to cloudinery 
+
+const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
+  const dataUrl = `data:${mimetype};base64,${imgBuffer.toString("base64")}`;
+
+  return await cloudinaryConfig.uploader.upload(dataUrl);
+};
+
+
+
+module.exports = { isValidEmail, generateOTP, generateAccessToken, generateRefreshToken, uploadToCloudinary }

@@ -1,6 +1,6 @@
 const { otpEmailTemplates } = require("../helpers/emailTemplates");
 const mailSender = require("../helpers/mailService");
-const { isValidEmail, generateOTP } = require("../helpers/utils");
+const { isValidEmail, generateOTP, uploadToCloudinary } = require("../helpers/utils");
 const userSchema = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
 const { generateAccessToken, generateRefreshToken } = require("../helpers/utils");
@@ -150,7 +150,7 @@ const signin = async (req, res) => {
 const profile = async (req, res) => {
   try {
     const user = await userSchema.findOne({ _id: req.user.id }, { _id: 1, avatar: 1, fullname: 1, email: 1 ,  roll: 1});
-
+console.log(user);
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -174,6 +174,11 @@ const userData = await userSchema.findOne({_id: req.user.id});
 if(!userData) return res.status(404).send("User not found");
 // if(fullname && fullname.trim()) userData.fullname = fullname;
 // if(address && address.trim()) userData.address = address;
+
+if(avatar){
+  const cloudResponse = await uploadToCloudinary({mimetype: avatar.mimetype, imgBuffer: avatar.buffer});
+  userData.avatar = cloudResponse.secure_url;
+}
 console.log(userData);
 console.log(avatar);
 
