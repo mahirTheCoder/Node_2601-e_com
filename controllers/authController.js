@@ -4,6 +4,7 @@ const {
   isValidEmail,
   generateOTP,
   uploadToCloudinary,
+  destroyFromCloudinarY,
 } = require("../helpers/utils");
 const userSchema = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
@@ -144,8 +145,6 @@ const signin = async (req, res) => {
 
     const token = generateAccessToken(user);
     const reftoken = generateRefreshToken(user);
-    // const token = generateAccessToken(user);
-    // const reftoken = generateRefreshToken(user);
 
     res
       .status(200)
@@ -187,22 +186,29 @@ const updateProfile = async (req, res) => {
     const userData = await userSchema.findOne({ _id: req.user.id });
 
     if (!userData) return res.status(404).send("User not found");
-    if(fullname && fullname.trim()) userData.fullname = fullname;
-    if(address && address.trim()) userData.address = address;
-
+    if (fullname && fullname.trim()) userData.fullname = fullname;
+    if (address && address.trim()) userData.address = address;
+console.log(userData);
     if (avatar) {
       try {
-            console.log(avatar);
+        console.log(avatar);
         const avatarUrl = await uploadToCloudinary({
           mimetype: avatar.mimetype,
           imgBuffer: avatar.buffer,
         });
-        // if (userData.avatar) destroyFromCloudinary(userData.avatar);
+
+       console.log('avatarUrl', avatarUrl);
+
+        if (userData.avatar) destroyFromCloudinarY(userData.avatar);
+
         userData.avatar = avatarUrl;
-      } catch (error) {}
+      } catch (error) {
+        console.log("Error uploading avatar:", error);
+        return res.status(500).send("Error uploading avatar");
+      }
     }
 
-    userData.save();
+    await userData.save();
     res.status(200).send({ message: "Profile updated successfully" });
   } catch (err) {
     console.log(err);

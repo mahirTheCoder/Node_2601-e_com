@@ -47,21 +47,23 @@ const generateRefreshToken = (user) => {
 const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
   const dataUrl = `data:${mimetype};base64,${imgBuffer.toString("base64")}`;
 
-  return await cloudinary.uploader.upload(dataUrl);
+  const res = await cloudinary.uploader.upload(dataUrl);
+    return res.secure_url;
+
 };
 
 
 // -----------destroy from cloudinery
-// const destroyFromCloudinary = (url) => {
-//   const publicId = url.split("/").pop().split(".").shift();
+const destroyFromCloudinary = (url) => {
+  const publicId = url.split("/").pop().split(".").shift();
 
-//   cloudinary.uploader.destroy(publicId, (error, result) => {
-//     if (error) {
-//       console.log("Destroy From Cloudinary:", error);
-//     }
-//   });
-// };
+  cloudinary.uploader.destroy(publicId, (error, result) => {
+    if (error) {
+      console.log("Destroy From Cloudinary:", error);
+    }
+  });
+};
 
 
 
-module.exports = { isValidEmail, generateOTP, generateAccessToken, generateRefreshToken, uploadToCloudinary }
+    module.exports = { isValidEmail, generateOTP, generateAccessToken, generateRefreshToken, uploadToCloudinary, destroyFromCloudinary }
