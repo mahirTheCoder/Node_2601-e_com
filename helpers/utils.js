@@ -21,7 +21,7 @@ const generateOTP = () => {
 const generateAccessToken = (user) => {
   return jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
       email: user.email,
       roll: user.roll,
     },
@@ -34,7 +34,7 @@ const generateAccessToken = (user) => {
 const generateRefreshToken = (user) => {
   return jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
     },
     process.env.JWT_SEC,
     { expiresIn: "7d" }
@@ -48,8 +48,8 @@ const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
   const dataUrl = `data:${mimetype};base64,${imgBuffer.toString("base64")}`;
 
   const res = await cloudinary.uploader.upload(dataUrl);
-    return res.secure_url;
 
+  return res.secure_url;
 };
 
 

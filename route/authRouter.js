@@ -12,6 +12,6 @@ route.post('/verifyOtp', verifyOTP)
 route.post('/resendOtp', resendOTP)
 route.post('/signin', signin)
 route.get('/profile', authMiddleware, profile)
-route.put('/updateProfile', authMiddleware, upload.single('avatar'), updateProfile)
+// route.put('/updateProfile', authMiddleware, upload.single('avatar'), updateProfile)
 
 module.exports = route

@@ -4,7 +4,7 @@ const {
   isValidEmail,
   generateOTP,
   uploadToCloudinary,
-  destroyFromCloudinarY,
+  destroyFromCloudinary,
 } = require("../helpers/utils");
 const userSchema = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
@@ -160,61 +160,63 @@ const signin = async (req, res) => {
 // -----------profile controller
 const profile = async (req, res) => {
   try {
-    const user = await userSchema.findOne(
-      { _id: req.user.id },
-      { _id: 1, avatar: 1, fullname: 1, email: 1, roll: 1 },
+    const profileData = await userSchema.findOne(
+      { _id: req.user._id },
+      { fullname: 1, email: 1, role: 1, avatar: 1, address: 1 },
     );
-    console.log(user);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
+    console.log(profileData);
+    if (!profileData)
+      return res.status(400).send({ message: "Invalid request" });
 
-    res.status(200).send(user);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Server error");
+    res.status(200).send(profileData);
+  } catch (error) {
+    console.log("PROFILE ERROR:", error);
+
+    return res.status(500).send({
+      message: "Internal Server Error.",
+    });
   }
 };
 
 // ----------update profile controller
 
-const updateProfile = async (req, res) => {
-  const { fullname, address } = req.body;
-  const avatar = req.file;
+// const updateProfile = async (req, res) => {
+//   const { fullname, address } = req.body;
+//   const avatar = req.file;
 
-  try {
-    const userData = await userSchema.findOne({ _id: req.user.id });
+//   try {
+//     const userData = await userSchema.findOne({ _id: req.user.id });
 
-    if (!userData) return res.status(404).send("User not found");
-    if (fullname && fullname.trim()) userData.fullname = fullname;
-    if (address && address.trim()) userData.address = address;
-console.log(userData);
-    if (avatar) {
-      try {
-        console.log(avatar);
-        const avatarUrl = await uploadToCloudinary({
-          mimetype: avatar.mimetype,
-          imgBuffer: avatar.buffer,
-        });
+//     if (!userData) return res.status(404).send("User not found");
+//     if (fullname && fullname.trim()) userData.fullname = fullname;
+//     if (address && address.trim()) userData.address = address;
+//     console.log(userData);
+//     if (avatar) {
+//       try {
+//         console.log(avatar);
+//         const avatarUrl = await uploadToCloudinary({
+//           mimetype: avatar.mimetype,
+//           imgBuffer: avatar.buffer,
+//         });
 
-       console.log('avatarUrl', avatarUrl);
+//         console.log("avatarUrl", avatarUrl);
 
-        if (userData.avatar) destroyFromCloudinarY(userData.avatar);
+//         if (userData.avatar) destroyFromCloudinarY(userData.avatar);
 
-        userData.avatar = avatarUrl;
-      } catch (error) {
-        console.log("Error uploading avatar:", error);
-        return res.status(500).send("Error uploading avatar");
-      }
-    }
+//         userData.avatar = avatarUrl;
+//       } catch (error) {
+//         console.log("Error uploading avatar:", error);
+//         return res.status(500).send("Error uploading avatar");
+//       }
+//     }
 
-    await userData.save();
-    res.status(200).send({ message: "Profile updated successfully" });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Server error");
-  }
-};
+//     await userData.save();
+//     res.status(200).send({ message: "Profile updated successfully" });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).send("Server error");
+//   }
+// };
 
 module.exports = {
   signup,
@@ -222,5 +224,4 @@ module.exports = {
   resendOTP,
   signin,
   profile,
-  updateProfile,
 };
