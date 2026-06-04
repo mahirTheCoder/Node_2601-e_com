@@ -182,18 +182,31 @@ const profile = async (req, res) => {
 const updateProfile = async (req, res) => {
   const { fullname, address } = req.body;
   const avatar = req.file;
-
   try {
     const userData = await userSchema.findOne({ _id: req.user._id });
-    console.log(userData);
-    if (!userData) return res.status(404).send("User not found");
-   
+   console.log(userData)
+    if (!userData)
+      return res.status(400).send({ message: "Something went wrong" });
+
+    if (fullname && fullname.trim()) userData.fullname = fullname;
+    if (address && address.trim()) userData.address = address;
+
+    if (avatar) {
+      console.log("Avatar received:", avatar); // Debugging log
+      const avatarUrl = await uploadToCloudinary({
+        mimetype: avatar.mimetype,
+        imgBuffer: avatar.buffer,
+      });
+
+      if (userData.avatar) await destroyFromCloudinary(userData.avatar); // await দাও
+      userData.avatar = avatarUrl;
+    }
 
     await userData.save();
     res.status(200).send({ message: "Profile updated successfully" });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Server error");
+  } catch (error) {
+    console.log(error); // এখন আসল error দেখতে পাবে
+    res.status(500).send({ message: "Internal Server Error." });
   }
 };
 
@@ -203,5 +216,5 @@ module.exports = {
   resendOTP,
   signin,
   profile,
-  updateProfile,
+  // updateProfile,
 };

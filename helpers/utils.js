@@ -43,31 +43,6 @@ const generateRefreshToken = (user) => {
   );
 };
 
-
-// const generateAccessToken = (user) => {
-//   return jwt.sign(
-//     {
-//       _id: user._id,
-//       email: user.email,
-//       role: user.role,
-//     },
-//     process.env.JWT_SEC,
-//     { expiresIn: "2h" },
-//   );
-// };
-// const generateRefreshToken = (user) => {
-//   return jwt.sign(
-//     {
-//       _id: user._id,
-//       email: user.email,
-//       role: user.role,
-//     },
-//     process.env.JWT_SEC,
-//     { expiresIn: "15d" },
-//   );
-// };
-
-
 // -----------upload to cloudinery 
 
 const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
