@@ -23,23 +23,49 @@ const generateAccessToken = (user) => {
     {
       _id: user._id,
       email: user.email,
-      roll: user.roll,
+      role: user.role,
     },
     process.env.JWT_SEC,
-    { expiresIn: "2h" }
+    { expiresIn: "2h" },
   );
 };
 
 // ---------refresh token generate
 const generateRefreshToken = (user) => {
-  return jwt.sign(
+ return jwt.sign(
     {
       _id: user._id,
+      email: user.email,
+      role: user.role,
     },
     process.env.JWT_SEC,
-    { expiresIn: "7d" }
+    { expiresIn: "15d" },
   );
 };
+
+
+// const generateAccessToken = (user) => {
+//   return jwt.sign(
+//     {
+//       _id: user._id,
+//       email: user.email,
+//       role: user.role,
+//     },
+//     process.env.JWT_SEC,
+//     { expiresIn: "2h" },
+//   );
+// };
+// const generateRefreshToken = (user) => {
+//   return jwt.sign(
+//     {
+//       _id: user._id,
+//       email: user.email,
+//       role: user.role,
+//     },
+//     process.env.JWT_SEC,
+//     { expiresIn: "15d" },
+//   );
+// };
 
 
 // -----------upload to cloudinery 
