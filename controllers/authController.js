@@ -20,7 +20,7 @@ const signup = async (req, res) => {
     if (!fullname) return res.status(400).send("Fullname is required");
     if (!email) return res.status(400).send("Email is required");
     if (!isValidEmail(email)) return res.status(400).send("Invalid email");
-    if (!password || password.length < 6)
+    if (!password)
       return res
         .status(400)
         .send("Password is required and must be at least 6 characters long");
@@ -158,7 +158,7 @@ const signin = async (req, res) => {
 };
 
 // -----------profile controller
-const profile = async (req, res) => {
+const getProfile = async (req, res) => {
   try {
     const profileData = await userSchema.findOne(
       { _id: req.user._id },
@@ -184,29 +184,26 @@ const updateProfile = async (req, res) => {
   const avatar = req.file;
   try {
     const userData = await userSchema.findOne({ _id: req.user._id });
-   console.log(userData)
-    if (!userData)
-      return res.status(400).send({ message: "Something went wrong" });
-
+    console.log(userData);
+    if (!userData) return res.status(400).send({ message: "Invalid request" });
     if (fullname && fullname.trim()) userData.fullname = fullname;
-    if (address && address.trim()) userData.address = address;
-
+    if (address) userData.address = address;
     if (avatar) {
-      console.log("Avatar received:", avatar); // Debugging log
+      console.log(avatar);
       const avatarUrl = await uploadToCloudinary({
         mimetype: avatar.mimetype,
         imgBuffer: avatar.buffer,
       });
-
-      if (userData.avatar) await destroyFromCloudinary(userData.avatar); // await দাও
+      // if (userData.avatar) {
+      //   destroyFromCloudinary(userData.avatar);
+      // }
       userData.avatar = avatarUrl;
     }
-
     await userData.save();
-    res.status(200).send({ message: "Profile updated successfully" });
-  } catch (error) {
-    console.log(error); // এখন আসল error দেখতে পাবে
-    res.status(500).send({ message: "Internal Server Error." });
+    res.status(200).send({ message: "Profile updated successfully!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };
 
@@ -215,6 +212,6 @@ module.exports = {
   verifyOTP,
   resendOTP,
   signin,
-  profile,
-  // updateProfile,
+  getProfile,
+  updateProfile,
 };
