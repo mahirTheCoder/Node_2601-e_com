@@ -189,17 +189,19 @@ const updateProfile = async (req, res) => {
     if (fullname && fullname.trim()) userData.fullname = fullname;
     if (address) userData.address = address;
     if (avatar) {
-      console.log(avatar);
-      const avatarUrl = await uploadToCloudinary({
-        mimetype: avatar.mimetype,
-        imgBuffer: avatar.buffer,
-      });
-      // if (userData.avatar) {
-      //   destroyFromCloudinary(userData.avatar);
-      // }
-      userData.avatar = avatarUrl;
+      try {
+        const avatarUrl = await uploadToCloudinary({
+          mimetype: avatar.mimetype,
+          imgBuffer: avatar.buffer,
+        });
+        if (userData.avatar) destroyFromCloudinary(userData.avatar);
+        userData.avatar = avatarUrl;
+      } catch (error) {
+        console.log("Cloudinary upload error:", error);
+        return res.status(500).send({ message: "Failed to upload avatar" });
+      }
     }
-    await userData.save();
+    userData.save();
     res.status(200).send({ message: "Profile updated successfully!" });
   } catch (err) {
     console.log(err);

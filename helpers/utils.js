@@ -54,7 +54,6 @@ const uploadToCloudinary = async ({ mimetype, imgBuffer }) => {
 };
 
 
-
 // -----------destroy from cloudinery
 const destroyFromCloudinary = (url) => {
   const publicId = url.split("/").pop().split(".").shift();
