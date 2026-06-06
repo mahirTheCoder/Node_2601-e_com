@@ -14,4 +14,21 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware };
+
+const roleCheker = (roles) => {
+  return (req, res, next) => {
+    if (Array.isArray(roles) && roles.length > 0) {
+      if (roles.includes(req.user.role)) {
+        next();
+      } else {
+        return res.status(403).send({ message: "Forbidden: Access is denied" });
+      }
+
+    }else {
+      return res.status(500).send({ message: "Role is not defined properly" });
+    }
+
+};
+}
+
+module.exports = { authMiddleware, roleCheker };
