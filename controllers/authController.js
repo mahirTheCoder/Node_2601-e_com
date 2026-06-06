@@ -184,10 +184,9 @@ const updateProfile = async (req, res) => {
   const avatar = req.file;
   try {
     const userData = await userSchema.findOne({ _id: req.user._id });
-    console.log(userData);
     if (!userData) return res.status(400).send({ message: "Invalid request" });
     if (fullname && fullname.trim()) userData.fullname = fullname;
-    if (address) userData.address = address;
+    if (address?.trim()) userData.address = address;
     if (avatar) {
       try {
         const avatarUrl = await uploadToCloudinary({
@@ -201,7 +200,7 @@ const updateProfile = async (req, res) => {
         return res.status(500).send({ message: "Failed to upload avatar" });
       }
     }
-    userData.save();
+    await userData.save();
     res.status(200).send({ message: "Profile updated successfully!" });
   } catch (err) {
     console.log(err);
