@@ -208,6 +208,24 @@ const updateProfile = async (req, res) => {
   }
 };
 
+
+
+// ------------userlist controller
+
+const userList = async (req, res) => {
+  try {
+    const users = await userSchema.find(
+      {},
+      { fullname: 1, email: 1, role: 1, isVerified: 1 },
+    );
+
+    res.status(200).send(users);
+  } catch (error) {
+    console.log("USER LIST ERROR:", error);
+    return res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   signup,
   verifyOTP,
@@ -215,4 +233,5 @@ module.exports = {
   signin,
   getProfile,
   updateProfile,
+  userList,
 };

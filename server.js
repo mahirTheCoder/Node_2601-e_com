@@ -15,6 +15,9 @@ dbConfig()
 // -----env
 // MONGODB_URL = mongodb+srv://node_Ecom:AWufiBcjuNvMr8Vj@cluster0.mjewgzf.mongodb.net/Node_Ecom?appName=Cluster0
 // JWT_SEC = kdfjdfhnjdhfkjdfh
+// CLOUD_NAME=db21zycb0
+// CLOUD_API_KEY=629132211689732
+// API_SECRET=fpHLqmNgFCcBLr1oYBaf47Zfkkw
 
 
 app.listen((8000), () => {
