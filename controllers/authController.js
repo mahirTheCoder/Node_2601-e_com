@@ -213,10 +213,12 @@ const updateProfile = async (req, res) => {
 const userList = async (req, res) => {
   const { verified } = req.query || "";
   const filterQuery = {};
+
   if (verified && verified.toLowerCase() != "all") {
+    filterQuery.isVerified = verified === 'true'
   }
 
-  try {
+  try {  
     const users = await userSchema.find(
       { filterQuery },
       { fullname: 1, email: 1, role: 1, isVerified: 1 },

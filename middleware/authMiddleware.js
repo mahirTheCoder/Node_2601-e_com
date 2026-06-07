@@ -14,7 +14,7 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-
+// ----------role check middleware 
 const roleCheck = (roles) => {
   return (req, res, next) => {
     if (Array.isArray(roles) && roles.length > 0) {
