@@ -185,7 +185,7 @@ const updateProfile = async (req, res) => {
   try {
     const userData = await userSchema.findOne({ _id: req.user._id });
     if (!userData) return res.status(400).send({ message: "Invalid request" });
-    if (fullname && fullname.trim()) userData.fullname = fullname;
+    if (fullname?.trim()) userData.fullname = fullname;
     if (address?.trim()) userData.address = address;
     if (avatar) {
       try {
@@ -208,14 +208,17 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
-
 // ------------userlist controller
 
 const userList = async (req, res) => {
+  const { verified } = req.query || "";
+  const filterQuery = {};
+  if (verified && verified.toLowerCase() != "all") {
+  }
+
   try {
     const users = await userSchema.find(
-      {},
+      { filterQuery },
       { fullname: 1, email: 1, role: 1, isVerified: 1 },
     );
 
